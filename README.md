@@ -34,7 +34,7 @@ I would also go through and make the rest of the code async, I'm sure there are 
 framework methods exist, but I used the synchronous version instead.
 
 Lastly I would ask if there was any flexibility in the way errors are expected to be logged. Logging errors in the 
-individual Order objects was cumbersome and resulted it me passing the Errors property through the class hierarchy. This
+individual Order objects was cumbersome and resulted in me passing the Errors property through the class hierarchy. This
 felt like a pretty bad code smell to me due to it working through side effects and appearing all over the code.I would 
 have preferred to log the errors to a singleton instance. It's also possible I was taking the final sentence of the 
 instructions too literally and logging the errors necessarily on the Order object wasn't a requirement.
