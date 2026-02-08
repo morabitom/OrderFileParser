@@ -1,18 +1,29 @@
-﻿global using static OrderFileParser.DataFileUtilities;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Text.Json;
-using OrderFileParser.Models.Order;
 
-const string fileName = "OrderFile.txt";
-var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
-Console.WriteLine(File.Exists(filePath) ? $"Found Order File: {fileName}" : "Order File Not Found");
+namespace OrderFileParser;
 
-var orders = await Orders.LoadFromFile(filePath);
-
-var jsonOptions = new JsonSerializerOptions
+class Program
 {
-    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, 
-    WriteIndented = true
-};
+    static async Task Main(string[] args)
+    {
+        const string fileName = "OrderFile.txt";
+        var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
 
-Console.WriteLine(JsonSerializer.Serialize(orders, jsonOptions));
+        var (orders, error) = await Orders.TryLoadFromFileAsync(filePath);
+        if (!string.IsNullOrEmpty(error))
+        {
+            Console.WriteLine($"Error loading orders: {error}");
+            return;
+        }
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, 
+            IncludeFields = true,
+            WriteIndented = true
+        };
+
+        Console.WriteLine(JsonSerializer.Serialize(orders, jsonOptions));
+    }
+}
